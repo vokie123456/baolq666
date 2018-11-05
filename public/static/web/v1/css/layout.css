@@ -22,8 +22,9 @@ textarea {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 .hide{
-	display: none !important; 
+	display: none;
 }
+
 header{
 	position: relative;
 }
@@ -179,4 +180,109 @@ header img{
     position: relative;
     vertical-align: 0;
     top: -.16em;
+}
+
+
+/*new*/
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+}
+.pop-login{
+	background: url(../image/pop-bg.png) no-repeat;
+	background-size: 100% 100%;
+	width: 6.58rem;
+	height: 5.76rem;
+	position: fixed;
+	top: 3.2rem;
+	margin: 0 0.45rem;
+}
+.dele{
+	background: url(../image/dele.png) no-repeat;
+	background-size: 100% 100%;
+	width: 0.68rem;
+	height: 1.62rem;
+	float: right;
+   	margin: 1.6rem 0.8rem 0 0;
+}
+.pop-login > p{
+	font-size: 0.48rem;
+	color: #48339f;
+	text-align: center;
+	padding: 0.73rem 0 0 0;
+}
+.login-phone{
+	border-bottom: 1px solid #dbdfe4;
+	padding: 0 0rem 0 0.1rem;
+	overflow: hidden;
+	margin: 0.8rem 0.3rem 0;
+	line-height: 0.95rem;
+}
+.login-phone ul li{
+	float: left;
+	color: #333333;
+	font-size: 0.34rem;
+}
+.login-phone ul li:nth-child(1){
+	width: 12%;
+}
+.login-phone ul li img{
+	width: 0.34rem;
+	height: 0.48rem;
+}
+.login-phone input{
+	border: 0;
+	padding: 0.26rem 0 0 0;
+}
+.login-code{
+	margin: 0rem 0.3rem 0;
+	border-bottom: 1px solid #dbdfe4;
+	padding: 0 0rem 0 0.1rem;
+	overflow: hidden;
+	height: 1.1rem;
+}
+.login-code ul li{
+	float: left;
+	color: #333333;
+	font-size: 0.34rem;
+}
+.login-code ul li:nth-child(1){
+	width: 12%;
+	margin: 0.28rem 0 0 0;
+}
+.login-code ul li:nth-child(2){
+	width: 57%;
+}
+.login-code ul li:nth-child(3){
+	font-size: 0.3rem;	
+	color: #48339f;
+	padding: 0.1rem 0.1rem;
+	text-align: center;
+	border: 1px solid #dbdfe4;
+	margin: 0.2rem 0 0 0;
+}
+.login-code input{
+	border: 0;
+	padding: 0.32rem 0 0 0;
+	width: 100%;
+}
+.login-code ul li img{
+	width: 0.39rem;
+	height: 0.44rem;
+}
+.login-btn{
+	background: #48339f;
+	border-radius: 0.1rem;
+	-webkit-border-radius: 0.1rem;
+	font-size: 0.36rem;
+	color: #fff;
+	height: 0.92rem;
+	line-height: 0.92rem;
+	margin: 0.35rem 0.2rem 0;
+	text-align: center;
 }

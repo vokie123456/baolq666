@@ -13,6 +13,10 @@ class BaseController extends Controller
 {
     protected $outData = [];
 
+    public $userAuthKey = 'user_auth_key';
+
+    public $clickUrl = 'click_url';
+
     public function __construct()
     {
 //        $this->middleware(function ($request, $next) {

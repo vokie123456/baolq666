@@ -42,6 +42,43 @@ class UserService extends BaseService
         return $query->paginate(10);
     }
 
+    /**
+     * 添加注册用户
+     * @param $params
+     * @return mixed
+     */
+    public function AddRegisterUser($params)
+    {
+        try{
+            return DB::table('user_info')->insertGetId($params);
+        }catch (\Exception $e) {
+            return $this->sendErrorMessage(false,ErrorCode::REQUEST_PARAM_ERROR,$e->getMessage(),$e->getMessage());
+        }
+    }
+
+    /**
+     * 根据openid查询用户信息
+     * @param $openId
+     * @return mixed
+     */
+    public function getRegisterUser($openId)
+    {
+        return DB::table('user_info')->where('open_id', $openId)->first();
+    }
+
+    /**
+     * 用户点击记录
+     * @param $params
+     * @return mixed
+     */
+    public function AddClickRecord($params)
+    {
+        try{
+            return DB::table('click_link_record')->insert($params);
+        }catch (\Exception $e) {
+            return $this->sendErrorMessage(false,ErrorCode::REQUEST_PARAM_ERROR,$e->getMessage(),$e->getMessage());
+        }
+    }
 
 
 }

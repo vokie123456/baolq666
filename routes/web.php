@@ -23,5 +23,11 @@ Route::get('/product/more', 'Web\HomeController@More');
 // api
 Route::get('/api/product', 'Web\HomeController@Product');
 
+//申请贷款
+Route::match(['get','post'], '/apply/loan', 'Web\HomeController@ApplyLoan');
 
+//sms 验证码
+Route::post('/send/sms', 'Web\HomeController@SendSms');
 
+//绑定手机登陆
+Route::post('/bind/login', 'Web\HomeController@BindLogin');
