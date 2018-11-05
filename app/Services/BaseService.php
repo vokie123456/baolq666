@@ -53,7 +53,7 @@ abstract class BaseService {
             return true;
         }
         catch (\Exception $e) {
-            return $this->sendErrorMessage(false, ErrorCode::INTERFACE_ERROR_PROPERTY, '通知失败:'.$e->getMessage(), $e->getMessage());
+            return $this->sendErrorMessage(false, ErrorCode::DB_ERROR_INSERT, '通知失败:'.$e->getMessage(), $e->getMessage());
         }
     }
 
@@ -69,7 +69,7 @@ abstract class BaseService {
             return true;
         }
         catch (\Exception $e) {
-            return $this->sendErrorMessage(false, ErrorCode::DB_ERROR_INSERT, '添加失败:'.$e->getMessage(), $e->getMessage());
+            return $this->sendErrorMessage(false, ErrorCode::DB_ERROR_UPDATE, '添加失败:'.$e->getMessage(), $e->getMessage());
         }
     }
 
