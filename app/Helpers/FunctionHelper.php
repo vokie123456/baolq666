@@ -686,6 +686,6 @@ if (! function_exists('getRequestContent')) {
             );
         }
 
-        return $result;
+        return json_decode($result,true);
     }
 }

@@ -37,13 +37,6 @@ class HomeController extends BaseController
         $products = $ProductService->getWebProduct(5);
 
         $this->outData['products'] = $products;
-        //微信授权链接
-        $appId = env('WECHAT_ACCOUNT_APPID');
-        $AppUrl = env('WECHAT_REDIRECT_URL');
-        $api_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='. $appId.'&redirect_uri='.$AppUrl;
-        $api_url .= '/wx/oauth&response_type=code&scope=snsapi_userinfo&state=123&connect_redirect=1#wechat_redirect';
-
-        $this->outData['wx_url'] = $api_url;
         $this->outData['mask'] = $request->input('mask', ''); //是否显示弹框
 
         return view('web.v1.index',  $this->outData);
@@ -150,6 +143,14 @@ class HomeController extends BaseController
 
             $request->session()->put($this->userAuthKey, $WxUserInfo);
             return redirect('/?mask=true');
+        } else {
+            //微信授权链接
+            $appId = env('WECHAT_ACCOUNT_APPID');
+            $AppUrl = env('WECHAT_REDIRECT_URL');
+            $api_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='. $appId.'&redirect_uri='.$AppUrl;
+            $api_url .= '/wx/oauth&response_type=code&scope=snsapi_userinfo&state=123&connect_redirect=1#wechat_redirect';
+
+            @header("location: ".$api_url);
         }
     }
 
