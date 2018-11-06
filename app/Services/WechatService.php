@@ -37,9 +37,9 @@ class WechatService extends BaseService
             $appSecret = self::getSecret();
             $url = $this->WxUrl.'/token?grant_type=client_credential&appid='.$appId.'&secret='.$appSecret;
 
-            $ret = post_curl($url,[],[],'GET');
+            $ret = getRequestContent($url);
             if(empty($ret['access_token']) || $ret['access_token'] == '') {
-                $ret = post_curl($url,[],[],'GET');
+                $ret = getRequestContent($url);
             }
 
             if(isset($ret['access_token']) && $ret['access_token'] != '') {
@@ -56,10 +56,10 @@ class WechatService extends BaseService
     {
         $token = $this->getApiToken();
         $url = $this->WxUrl.'/user/info?access_token='.$token.'&openid='.$openId.'&lang=zh_CN';
-        $ret = post_curl($url,[],[],'GET');
+        $ret = getRequestContent($url);
 
         if(!isset($ret['openid']))
-            $ret = post_curl($url,[],[],'GET');
+            $ret = getRequestContent($url);
 
         if(isset($ret['openid']))
             return $ret;
@@ -75,9 +75,9 @@ class WechatService extends BaseService
         $url  = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='. $appId .'&secret='. $appSecret
             .'&code='. $code .'&grant_type=authorization_code';
 
-        $ret = post_curl($url,[],[],'GET');
+        $ret = getRequestContent($url);
         if(!isset($ret['openid']))
-            $ret = post_curl($url,[],[],'GET');
+            $ret = getRequestContent($url);
 
         if(isset($ret['openid']))
             return $ret['openid'];

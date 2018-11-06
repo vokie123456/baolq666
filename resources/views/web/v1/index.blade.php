@@ -5,7 +5,7 @@
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>index</title>
+    <title>BaoLQ</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp">
     <meta name="mobile-web-app-capable" content="yes">
@@ -242,8 +242,10 @@
                 if(data.code === 0 && data.content.status == true) {
                     var url = data.content.url;
                     window.location.href = url;
+                    return false;
                 } else {
                     window.location.href = wx_url;
+                    return false;
                 }
             }
         });

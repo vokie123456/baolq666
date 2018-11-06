@@ -41,7 +41,7 @@ class HomeController extends BaseController
         $appId = env('WECHAT_ACCOUNT_APPID');
         $AppUrl = env('WECHAT_REDIRECT_URL');
         $api_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='. $appId.'&redirect_uri='.$AppUrl;
-        $api_url .= '/apply/loan&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect';
+        $api_url .= '/wx/oauth&response_type=code&scope=snsapi_userinfo&state=123&connect_redirect=1#wechat_redirect';
 
         $this->outData['wx_url'] = $api_url;
         $this->outData['mask'] = $request->input('mask', ''); //是否显示弹框
@@ -78,16 +78,42 @@ class HomeController extends BaseController
     //申请贷款
     public function ApplyLoan(Request $request)
     {
-        if($request->input('code')) {
+        $backUrl = $request->input('back_url');
+        $request->session()->put($this->clickUrl, $backUrl);
+        if($request->session()->has($this->userAuthKey)) {
+            //点击链接记录下来
+            $userService = new UserService();
+
+            $ClickParams = [
+                'user_id' => $request->session()->get($this->userAuthKey)['user_id'],
+                'url' => $backUrl,
+                'created_at' => time()
+            ];
+            $userService->AddClickRecord($ClickParams);
+
+            $this->outData['status'] = true;
+            $this->outData['url'] = $backUrl;
+            return output($this->outData);
+        } else {
+
+            $this->outData['status'] = false;
+            return output($this->outData);
+        }
+
+    }
+
+    public function WxOauth(Request $request)
+    {
+        if($request->input('code') && $request->input('state')) {
             $wechatService = new WechatService();
             $openId = $wechatService->getOpenId($request->input('code'));
-            if($openId === false) {
-                abort(403,'获取openid失败，请稍后再试');
+            if ($openId === false) {
+                abort(403, '获取openid失败，请稍后再试');
             }
             //查看数据库中是否存在openid
             $userService = new UserService();
             $regUserInfo = $userService->getRegisterUser($openId);
-            if(!empty($regUserInfo)) {
+            if (!empty($regUserInfo)) {
                 //把用户信息
                 $WxUserInfo = [
                     'user_id' => $regUserInfo->id,
@@ -99,7 +125,7 @@ class HomeController extends BaseController
                 $request->session()->put($this->userAuthKey, $WxUserInfo);
                 //点击链接记录下来
                 $redirectUrl = $request->session()->get($this->clickUrl);
-                if($redirectUrl) {
+                if ($redirectUrl) {
                     $ClickParams = [
                         'user_id' => $regUserInfo->id,
                         'url' => $redirectUrl,
@@ -112,8 +138,8 @@ class HomeController extends BaseController
             }
 
             $userInfo = $wechatService->getUserInfo($openId);
-            if($userInfo === false) {
-                abort(403,'获取用户信息失败，请稍后再试');
+            if ($userInfo === false) {
+                abort(403, '获取用户信息失败，请稍后再试');
             }
             //把用户信息
             $WxUserInfo = [
@@ -124,29 +150,6 @@ class HomeController extends BaseController
 
             $request->session()->put($this->userAuthKey, $WxUserInfo);
             return redirect('/?mask=true');
-
-        } else {
-            $backUrl = $request->input('back_url');
-            $request->session()->put($this->clickUrl, $backUrl);
-            if($request->session()->has($this->userAuthKey)) {
-                //点击链接记录下来
-                $userService = new UserService();
-
-                $ClickParams = [
-                    'user_id' => $request->session()->get($this->userAuthKey)['user_id'],
-                    'url' => $backUrl,
-                    'created_at' => time()
-                ];
-                $userService->AddClickRecord($ClickParams);
-
-                $this->outData['status'] = true;
-                $this->outData['url'] = $backUrl;
-                return output($this->outData);
-            } else {
-
-                $this->outData['status'] = false;
-                return output($this->outData);
-            }
         }
     }
 

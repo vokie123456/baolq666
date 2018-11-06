@@ -26,6 +26,9 @@ Route::get('/api/product', 'Web\HomeController@Product');
 //申请贷款
 Route::match(['get','post'], '/apply/loan', 'Web\HomeController@ApplyLoan');
 
+//wx 授权
+Route::any('/wx/oauth', 'Web\HomeController@WxOauth');
+
 //sms 验证码
 Route::post('/send/sms', 'Web\HomeController@SendSms');
 

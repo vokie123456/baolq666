@@ -111,7 +111,7 @@ if (!function_exists('post_curl')) {
         curl_close($ch);
 
         if ($errno) {
-            fileLog(
+            file_log(
                 storage_path('logs/curl'),
                 sprintf(
                     'postCurl %s %s error: %s[%s]%s header: %s%s body: %s%s',
@@ -128,7 +128,7 @@ if (!function_exists('post_curl')) {
             );
             return false;
         } else {
-            fileLog(
+            file_log(
                 storage_path('logs/curl'),
                 sprintf(
                     'postCurl %s %s%s header: %s%s body %s%s response: %s%s',
@@ -234,7 +234,7 @@ if (!function_exists('post_curl_json')) {
         curl_close($ch);
 
         if ($errno) {
-            fileLog(
+            file_log(
                 storage_path('logs/curl'),
                 sprintf(
                     'postCurl %s %s error: %s[%s]%s header: %s%s body: %s%s',
@@ -251,7 +251,7 @@ if (!function_exists('post_curl_json')) {
             );
             return false;
         } else {
-            fileLog(
+            file_log(
                 storage_path('logs/curl'),
                 sprintf(
                     'postCurl %s %s%s header: %s%s body %s%s response: %s%s',
@@ -619,5 +619,73 @@ if (!function_exists('get_last_time')) {
             return $level;
 
         }
+    }
+}
+
+if (! function_exists('getRequestContent')) {
+    /**
+     * @param $url
+     * @param string $paramsData
+     * @param string $method
+     * @return mixed
+     */
+    function getRequestContent($url, $paramsData = '', $method = 'POST')
+    {
+        $ch = curl_init();
+        if($method == 'POST'){
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $paramsData);
+        }
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json; charset=utf-8',
+                'Content-Length: ' . strlen($paramsData)
+            )
+        );
+        $result = curl_exec($ch);
+        $err = curl_error($ch);
+        $errno = curl_errno($ch);
+
+        curl_close($ch);
+
+        if ($errno) {
+            file_log(
+                storage_path('logs/curl'),
+                sprintf(
+                    'postCurl %s %s error: %s[%s]%s body: %s%s',
+                    strtoupper($method),
+                    $url,
+                    $err,
+                    $errno,
+                    PHP_EOL,
+                    json_encode($paramsData),
+                    PHP_EOL
+                )
+            );
+            return false;
+        } else {
+            file_log(
+                storage_path('logs/curl'),
+                sprintf(
+                    'postCurl %s %s%s body %s%s response: %s%s',
+                    strtoupper($method),
+                    $url,
+                    PHP_EOL,
+                    json_encode(
+                        $paramsData,
+                        JSON_UNESCAPED_SLASHES
+                        | JSON_UNESCAPED_UNICODE
+                        | JSON_PRETTY_PRINT
+                        | JSON_FORCE_OBJECT
+                    ),
+                    PHP_EOL,
+                    $result,
+                    PHP_EOL
+                )
+            );
+        }
+
+        return $result;
     }
 }
