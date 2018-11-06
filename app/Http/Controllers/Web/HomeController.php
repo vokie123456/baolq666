@@ -73,7 +73,7 @@ class HomeController extends BaseController
     {
         $backUrl = $request->input('back_url');
         $request->session()->put($this->clickUrl, $backUrl);
-        if($request->session()->has($this->userAuthKey)) {
+        if($request->session()->has($this->userAuthKey) && isset($request->session()->get($this->userAuthKey)['user_id'])) {
             //点击链接记录下来
             $userService = new UserService();
 
@@ -110,9 +110,9 @@ class HomeController extends BaseController
                 //把用户信息
                 $WxUserInfo = [
                     'user_id' => $regUserInfo->id,
-                    'open_id' => $regUserInfo->openid,
+                    'open_id' => $regUserInfo->open_id,
                     'nickname' => $regUserInfo->nickname,
-                    'avatar_img' => $regUserInfo->headimgurl
+                    'avatar_img' => $regUserInfo->avatar_img
                 ];
 
                 $request->session()->put($this->userAuthKey, $WxUserInfo);

@@ -30,7 +30,7 @@ class WechatService extends BaseService
     //获取api Token
     public function getApiToken()
     {
-        if(session($this->apiTokenKey)) {
+        if(!empty(session($this->apiTokenKey))) {
             return session($this->apiTokenKey);
         } else {
             $appId = self::getAppId();
@@ -44,7 +44,7 @@ class WechatService extends BaseService
 
             if(isset($ret['access_token']) && $ret['access_token'] != '') {
                 session($this->apiTokenKey, $ret['access_token']);
-                return session($this->apiTokenKey);
+                return $ret['access_token'];
             }
 
             $this->sendErrorMessage(false,ErrorCode::REQUEST_PARAM_ERROR,'获取微信token失败','获取微信token失败');
