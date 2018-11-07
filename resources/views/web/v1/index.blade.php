@@ -50,7 +50,7 @@
                                 <span>{{ $product['des'] }}</span>
                             </p>
                             {{--<a href="{{ $product['url'] }}" >立即申请</a>--}}
-                            <a href="javascript:void(0);" onclick="apply_loan('{{ $wx_url }}', '{{ $product['url'] }}');">立即申请</a>
+                            <a href="javascript:void(0);" onclick="apply_loan('{{ $product['id'] }}');">立即申请</a>
                         </div>
                         <div class="clear"></div>
                         <div class="container-list-t">
@@ -231,11 +231,11 @@
     });
 
     //立即申请
-    function apply_loan(wx_url, url) {
+    function apply_loan(id) {
         $.ajax({
             type:'GET',
             url:'/apply/loan',
-            data:{'back_url':url},
+            data:{'back_id':id},
             dataType:'json',
             success:function(data){
                 console.log(data);
@@ -243,8 +243,15 @@
                     var url = data.content.url;
                     window.location.href = url;
                     return false;
+                } else if(data.code === 0 && data.content.status == 'warning') {
+                    layer.open({
+                        content: data.content.msg
+                        ,skin: 'msg'
+                        ,time: 2 //2秒后自动关闭
+                    });
+                    return false;
                 } else {
-                    window.location.href = wx_url;
+                    window.location.href = '/wx/oauth';
                     return false;
                 }
             }

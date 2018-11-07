@@ -71,28 +71,35 @@ class HomeController extends BaseController
     //申请贷款
     public function ApplyLoan(Request $request)
     {
-        $backUrl = $request->input('back_url');
-        $request->session()->put($this->clickUrl, $backUrl);
+        $backId = $request->input('back_id');
+        $request->session()->put($this->clickId, $backId);
         if($request->session()->has($this->userAuthKey) && isset($request->session()->get($this->userAuthKey)['user_id'])) {
             //点击链接记录下来
             $userService = new UserService();
+            $productService = new ProductService();
+            $productInfo = $productService->getProduct(['id'=>$backId]);
+            if(empty($productInfo) || empty($productInfo->url)) {
+                $this->outData['status'] = 'warning';
+                $this->outData['msg'] = '产品信息不完整';
+                return output($this->outData);
+            }
 
             $ClickParams = [
                 'user_id' => $request->session()->get($this->userAuthKey)['user_id'],
-                'url' => $backUrl,
+                'products_id' => $backId,
+//                'url' => $productInfo->url,
                 'created_at' => time()
             ];
             $userService->AddClickRecord($ClickParams);
 
             $this->outData['status'] = true;
-            $this->outData['url'] = $backUrl;
+            $this->outData['url'] = $productInfo->url;
             return output($this->outData);
         } else {
 
             $this->outData['status'] = false;
             return output($this->outData);
         }
-
     }
 
     public function WxOauth(Request $request)
@@ -117,17 +124,21 @@ class HomeController extends BaseController
 
                 $request->session()->put($this->userAuthKey, $WxUserInfo);
                 //点击链接记录下来
-                $redirectUrl = $request->session()->get($this->clickUrl);
-                if ($redirectUrl) {
-                    $ClickParams = [
-                        'user_id' => $regUserInfo->id,
-                        'url' => $redirectUrl,
-                        'created_at' => time()
-                    ];
-                    $userService->AddClickRecord($ClickParams);
-                }
+                $clickId = $request->session()->get($this->clickId);
+                $productService = new ProductService();
+                $productInfo = $productService->getProduct(['id'=>$clickId]);
+                if(empty($productInfo) || empty($productInfo->url))
+                    abort(403,'产品信息不完整');
 
-                return redirect($redirectUrl);
+                $ClickParams = [
+                    'user_id' => $regUserInfo->id,
+                    'products_id' => $clickId,
+//                    'url' => $productInfo->url,
+                    'created_at' => time()
+                ];
+                $userService->AddClickRecord($ClickParams);
+
+                return redirect($productInfo->url);
             }
 
             $userInfo = $wechatService->getUserInfo($openId);
@@ -213,22 +224,15 @@ class HomeController extends BaseController
             return output('',ErrorCode::REQUEST_PARAM_ERROR,'手机号或验证码输入错误','手机号或验证码输入错误');
 
         $WxUser = $request->session()->get($this->userAuthKey);
-        /**** 测试数据 上线要删掉 *****/
-//        $WxUser = [
-//            'user_id' => 1,
-//            'open_id' => '12312',
-//            'nickname' => 'test',
-//            'avatar_img' => 'adsfasd'
-//        ];
-        /**** 测试数据 上线要删掉end *****/
 
         $WxUser['mobile'] = $phone;
         $WxUser['created_at'] = time();
 
         $userService = new UserService();
         $ret = $userService->AddRegisterUser($WxUser);
-        if($ret == false)
+        if($ret == false) {
             return output('', $userService->getErrorCode(),$userService->getErrorMsg(),$userService->getErrorMsg());
+        }
 
         //更新验证码状态
         $Service->updateSms($code,$phone);
@@ -241,18 +245,28 @@ class HomeController extends BaseController
         ];
 
         $request->session()->put($this->userAuthKey, $WxUserInfo);
-        $redirectUrl = $request->session()->get($this->clickUrl);
-        //记录点击链接
-        $userService = new UserService();
-        $ClickParams = [
-            'user_id' => $request->session()->get($this->userAuthKey)['user_id'],
-            'url' => $redirectUrl,
-            'created_at' => time()
-        ];
-        $userService->AddClickRecord($ClickParams);
+        $clickId = $request->session()->get($this->clickId);
+        if(!empty($clickId)) {
+            $productService = new ProductService();
+            $productInfo = $productService->getProduct(['id'=>$clickId]);
+            if(empty($productInfo) || empty($productInfo->url))
+                return output('',ErrorCode::REQUEST_PARAM_ERROR,'产品信息不完整','产品信息不完整');
 
-        $this->outData['url'] = $redirectUrl;
-        return output($this->outData);
+            //记录点击链接
+            $userService = new UserService();
+            $ClickParams = [
+                'user_id' => $request->session()->get($this->userAuthKey)['user_id'],
+                'products_id' => $clickId,
+//                'url' => $productInfo->url,
+                'created_at' => time()
+            ];
+            $userService->AddClickRecord($ClickParams);
+
+            $this->outData['url'] = $productInfo->url;
+            return output($this->outData);
+        } else {
+            return output('',ErrorCode::REQUEST_PARAM_ERROR,'登陆超时，请重新进入','登陆超时，请重新进入');
+        }
     }
 
 

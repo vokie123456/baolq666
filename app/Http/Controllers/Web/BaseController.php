@@ -15,7 +15,7 @@ class BaseController extends Controller
 
     public $userAuthKey = 'user_auth_key';
 
-    public $clickUrl = 'click_url';
+    public $clickId = 'click_id';
 
     public function __construct()
     {
