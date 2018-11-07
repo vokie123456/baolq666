@@ -97,6 +97,8 @@
 <script type="text/javascript" src="{{ asset('static/common/js/jquery-2.1.4.js') }}"></script>
 <script type="text/javascript" src="{{ asset('static/common/js/swiper.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('static/common/js/layer.js') }}"></script>
+<script type="text/javascript" src="http://res2.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+{{--<script type="text/javascript" src="http://map.qq.com/api/js?v=2.exp"></script>--}}
 <script type="text/javascript">
     var mySwiper = new Swiper('.swiper-container',{
         loop : true,
@@ -258,6 +260,33 @@
         });
     }
 
+    //wx 定位
+    wx.config({
+        debug: true,
+        appId: '{{ $wx_info["appId"] }}',
+        timestamp: '{{ $wx_info["timestamp"] }}',
+        nonceStr: '{{ $wx_info["nonceStr"] }}',
+        signature: '{{ $wx_info["signature"] }}',
+        jsApiList: [
+            'getLocation'
+        ]
+    });
+
+    wx.ready(function () {
+        // 在这里调用 API
+
+        wx.getLocation({
+            type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+            success: function (res) {
+                console.log(res.latitude);
+            }
+        });
+
+        wx.error(function(res){
+            console.log(res);
+
+        });
+    });
 
 </script>
 </body>

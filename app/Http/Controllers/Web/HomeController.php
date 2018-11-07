@@ -16,6 +16,7 @@ use App\Services\ConfigService;
 use App\Services\ProductService;
 use App\Helpers\ErrorCode;
 use App\Services\AliSmsService;
+use App\Services\WechatJsService;
 
 class HomeController extends BaseController
 {
@@ -38,6 +39,14 @@ class HomeController extends BaseController
 
         $this->outData['products'] = $products;
         $this->outData['mask'] = $request->input('mask', ''); //是否显示弹框
+
+        //微信定位
+        $appKey = env('WECHAT_ACCOUNT_APPID');
+        $appSecret = env('WECHAT_ACCOUNT_SECRET');
+        $WeJsService = new WechatJsService($appKey, $appSecret);
+        $WxInfo = $WeJsService->GetSignPackage();
+
+        $this->outData['wx_info'] = $WxInfo;
 
         return view('web.v1.index',  $this->outData);
     }
