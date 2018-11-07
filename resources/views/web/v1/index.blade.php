@@ -30,7 +30,7 @@
         </div>
         <div class="header-address">
             <img src="{{ asset('static/web/v1/image/address-icon.png') }}"/>
-            <p>深圳</p>
+            <p id="city">深圳</p>
         </div>
     </header>
     <div class="clear"></div>
@@ -98,7 +98,7 @@
 <script type="text/javascript" src="{{ asset('static/common/js/swiper.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('static/common/js/layer.js') }}"></script>
 <script type="text/javascript" src="http://res2.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
-{{--<script type="text/javascript" src="http://map.qq.com/api/js?v=2.exp"></script>--}}
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=zZtp9zi2isS4PRb43rOTaG8f"></script>
 <script type="text/javascript">
     var mySwiper = new Swiper('.swiper-container',{
         loop : true,
@@ -274,11 +274,13 @@
 
     wx.ready(function () {
         // 在这里调用 API
-
         wx.getLocation({
             type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
             success: function (res) {
                 console.log(res.latitude);
+                var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                getCurrentCity(longitude, latitude);
             }
         });
 
@@ -287,6 +289,20 @@
 
         });
     });
+
+
+    function getCurrentCity(longitude, latitude) {//获取当前城市,行政区 // 百度地图API功能
+        var address = "";
+        var point = new BMap.Point(longitude, latitude);
+        var gc = new BMap.Geocoder();
+
+        gc.getLocation(point, function (rs) {
+            var addComp = rs.addressComponents;
+            //详细地址为省，市，行政区，街道，街道地址
+            //address = addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber;
+            $('#city').html(addComp.city);
+        });
+    }
 
 </script>
 </body>
