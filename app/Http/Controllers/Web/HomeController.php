@@ -64,6 +64,7 @@ class HomeController extends BaseController
 //        $products = $ProductService->getWebProduct(10);
 //
 //        $this->outData['products'] = $products;
+        $this->outData['mask'] = $request->input('mask', ''); //是否显示弹框
 
         return view('web.v1.more',  $this->outData);
     }

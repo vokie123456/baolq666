@@ -5,7 +5,7 @@
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>BaoLQ</title>
+    <title>包来钱</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp">
     <meta name="mobile-web-app-capable" content="yes">
