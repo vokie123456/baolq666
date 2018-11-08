@@ -71,5 +71,24 @@ class ProductService extends BaseService
         return $result;
     }
 
+    public function getClickList($params)
+    {
+        $query = DB::table('click_link_record as a')
+            ->leftJoin('user_info as b','b.id','=','a.user_id')
+            ->leftJoin('loan_product as c','c.id','=','a.products_id')
+            ->select('a.*','b.nickname','c.name');
+        if(isset($params['id']))
+            return $query->where('a.id', $params['id'])->first();
+
+        if(isset($params['name']))
+            $query->where('c.name', 'like',  $params['name'].'%');
+
+        if(isset($params['nickname']))
+            $query->where('b.nickname', 'like', $params['nickname'].'%');
+
+        return $query->orderBy('id','desc')->paginate(10);
+    }
+
+
 
 }

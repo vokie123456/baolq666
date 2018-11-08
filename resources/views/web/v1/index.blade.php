@@ -30,7 +30,7 @@
         </div>
         <div class="header-address">
             <img src="{{ asset('static/web/v1/image/address-icon.png') }}"/>
-            <p id="city">深圳</p>
+            <p id="city">深圳市</p>
         </div>
     </header>
     <div class="clear"></div>
@@ -262,7 +262,7 @@
 
     //wx 定位
     wx.config({
-        debug: true,
+        debug: false,
         appId: '{{ $wx_info["appId"] }}',
         timestamp: '{{ $wx_info["timestamp"] }}',
         nonceStr: '{{ $wx_info["nonceStr"] }}',

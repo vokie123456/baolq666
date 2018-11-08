@@ -42,4 +42,7 @@ Route::group(['middleware' => 'admin.auth'], function () {
     Route::match(['get', 'post'], 'product/add', 'ConfigController@AddProduct');
     Route::match(['get', 'post'], 'product/update/{id}', 'ConfigController@UpdateProduct');
 
+    //点击记录
+    Route::match(['get','post'],'click/record', 'RecordController@ClickRecord');
+
 });

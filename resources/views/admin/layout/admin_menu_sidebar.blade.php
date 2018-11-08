@@ -25,6 +25,7 @@
             <dd>
                 <ul>
                     <li><a data-href="/admin/product" data-title="产品列表" href="javascript:void(0)">产品列表</a></li>
+                    <li><a data-href="/admin/click/record" data-title="点击记录" href="javascript:void(0)">点击记录</a></li>
                 </ul>
             </dd>
         </dl>
