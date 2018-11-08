@@ -10,6 +10,7 @@ namespace App\Services;
 
 
 use App\Helpers\ErrorCode;
+use Illuminate\Support\Facades\Cache;
 
 class WechatService extends BaseService
 {
@@ -30,8 +31,8 @@ class WechatService extends BaseService
     //获取api Token
     public function getApiToken()
     {
-        if(!empty(session($this->apiTokenKey))) {
-            return session($this->apiTokenKey);
+        if(Cache::has($this->apiTokenKey)) {
+            return Cache::get($this->apiTokenKey);
         } else {
             $appId = self::getAppId();
             $appSecret = self::getSecret();
@@ -43,7 +44,7 @@ class WechatService extends BaseService
             }
 
             if(isset($ret['access_token']) && $ret['access_token'] != '') {
-                session($this->apiTokenKey, $ret['access_token']);
+                Cache::put($this->apiTokenKey, $ret['access_token'], 118);
                 return $ret['access_token'];
             }
 
@@ -69,8 +70,8 @@ class WechatService extends BaseService
 
     public function getOpenId($code)
     {
-        if(session('open_id')) {
-            return session('open_id');
+        if(Cache::has('open_id')) {
+            return Cache::get('open_id');
         } else {
             $appId = self::getAppId();
             $appSecret = self::getSecret();
@@ -81,7 +82,7 @@ class WechatService extends BaseService
             $ret = getRequestContent($url);
 
             if(isset($ret['openid'])) {
-                session('open_id', $ret['openid']);
+                Cache::put('open_id', $ret['openid'],1440);
                 return $ret['openid'];
             }
 

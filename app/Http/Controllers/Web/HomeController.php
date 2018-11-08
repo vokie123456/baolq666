@@ -17,6 +17,7 @@ use App\Services\ProductService;
 use App\Helpers\ErrorCode;
 use App\Services\AliSmsService;
 use App\Services\WechatJsService;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends BaseController
 {
@@ -82,7 +83,7 @@ class HomeController extends BaseController
     {
         $backId = $request->input('back_id');
         $request->session()->put($this->clickId, $backId);
-        if($request->session()->has($this->userAuthKey) && isset($request->session()->get($this->userAuthKey)['user_id'])) {
+        if(Cache::has($this->userAuthKey) && isset(Cache::get($this->userAuthKey)['user_id'])) {
             //点击链接记录下来
             $userService = new UserService();
             $productService = new ProductService();
@@ -94,7 +95,7 @@ class HomeController extends BaseController
             }
 
             $ClickParams = [
-                'user_id' => $request->session()->get($this->userAuthKey)['user_id'],
+                'user_id' => Cache::get($this->userAuthKey)['user_id'],
                 'products_id' => $backId,
 //                'url' => $productInfo->url,
                 'created_at' => time()
@@ -131,7 +132,7 @@ class HomeController extends BaseController
                     'avatar_img' => $regUserInfo->avatar_img
                 ];
 
-                $request->session()->put($this->userAuthKey, $WxUserInfo);
+                Cache::put($this->userAuthKey, $WxUserInfo, 720);
                 //点击链接记录下来
                 $clickId = $request->session()->get($this->clickId);
                 $productService = new ProductService();
@@ -161,7 +162,7 @@ class HomeController extends BaseController
                 'avatar_img' => $userInfo['headimgurl']
             ];
 
-            $request->session()->put($this->userAuthKey, $WxUserInfo);
+            Cache::put($this->userAuthKey, $WxUserInfo,10);
             return redirect('/?mask=true');
         } else {
             //微信授权链接
@@ -232,7 +233,7 @@ class HomeController extends BaseController
         if(empty($result))
             return output('',ErrorCode::REQUEST_PARAM_ERROR,'手机号或验证码输入错误','手机号或验证码输入错误');
 
-        $WxUser = $request->session()->get($this->userAuthKey);
+        $WxUser = Cache::get($this->userAuthKey);
 
         $WxUser['mobile'] = $phone;
         $WxUser['created_at'] = time();
@@ -253,7 +254,7 @@ class HomeController extends BaseController
             'avatar_img' => $WxUser['avatar_img']
         ];
 
-        $request->session()->put($this->userAuthKey, $WxUserInfo);
+        Cache::put($this->userAuthKey, $WxUserInfo,720);
         $clickId = $request->session()->get($this->clickId);
         if(!empty($clickId)) {
             $productService = new ProductService();
@@ -264,7 +265,7 @@ class HomeController extends BaseController
             //记录点击链接
             $userService = new UserService();
             $ClickParams = [
-                'user_id' => $request->session()->get($this->userAuthKey)['user_id'],
+                'user_id' => Cache::get($this->userAuthKey)['user_id'],
                 'products_id' => $clickId,
 //                'url' => $productInfo->url,
                 'created_at' => time()

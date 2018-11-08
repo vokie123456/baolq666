@@ -27,7 +27,7 @@
 
 <script type="text/javascript" src="{{ asset('static/common/js/flexible.js') }}"></script>
 <script type="text/javascript" src="{{ asset('static/common/js/jquery-2.1.4.js') }}"></script>
-<script type="text/javascript" src="{{ asset('static/common/js/check.js') }}"></script>
+<script type="text/javascript" src="{{ asset('static/common/js/check.js?ver=1.0') }}"></script>
 
 <script type="text/javascript">
     var opts = {
