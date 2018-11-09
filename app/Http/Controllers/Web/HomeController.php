@@ -107,7 +107,7 @@ class HomeController extends BaseController
             $this->outData['url'] = $productInfo->url;
             return output($this->outData);
         } else {
-
+            //if($_SERVER[''])
             $this->outData['status'] = false;
             return output($this->outData);
         }
@@ -129,8 +129,8 @@ class HomeController extends BaseController
                 $WxUserInfo = [
                     'user_id' => $regUserInfo->id,
                     'open_id' => $regUserInfo->open_id,
-                    'nickname' => $regUserInfo->nickname,
-                    'avatar_img' => $regUserInfo->avatar_img
+//                    'nickname' => $regUserInfo->nickname,
+//                    'avatar_img' => $regUserInfo->avatar_img
                 ];
 
                 Cache::put($this->userAuthKey, $WxUserInfo, 720);
@@ -152,30 +152,34 @@ class HomeController extends BaseController
                 return redirect($productInfo->url);
             }
 
-            $userInfo = $wechatService->getUserInfo($openId);
-            if ($userInfo === false) {
-                abort(403, '获取用户信息失败，请稍后再试');
-            }
-            if(isset($userInfo['subscribe']) && $userInfo['subscribe'] == '0')
-                abort(403, '您还未关注此公众号');
+//            $userInfo = $wechatService->getUserInfo($openId);
+//            if ($userInfo === false) {
+//                abort(403, '获取用户信息失败，请稍后再试');
+//            }
+//            if(isset($userInfo['subscribe']) && $userInfo['subscribe'] == '0')
+//                abort(403, '您还未关注此公众号');
 
             //把用户信息
             $WxUserInfo = [
-                'open_id' => $userInfo['openid'],
-                'nickname' => $userInfo['nickname'],
-                'avatar_img' => $userInfo['headimgurl']
+                'open_id' => $openId,
+//                'nickname' => $userInfo['nickname'],
+//                'avatar_img' => $userInfo['headimgurl']
             ];
 
             Cache::put($this->userAuthKey, $WxUserInfo,10);
             return redirect('/?mask=true');
         } else {
-            //微信授权链接
-            $appId = env('WECHAT_ACCOUNT_APPID');
-            $AppUrl = env('WECHAT_REDIRECT_URL');
-            $api_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='. $appId.'&redirect_uri='.$AppUrl;
-            $api_url .= '/wx/oauth&response_type=code&scope=snsapi_userinfo&state=123&connect_redirect=1#wechat_redirect';
+            if(stripos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
+                //微信授权链接
+                $appId = env('WECHAT_ACCOUNT_APPID');
+                $AppUrl = env('WECHAT_REDIRECT_URL');
+                $api_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='. $appId.'&redirect_uri='.$AppUrl;
+                $api_url .= '/wx/oauth&response_type=code&scope=snsapi_base&state=123&connect_redirect=1#wechat_redirect';
 
-            @header("Location: ".$api_url);
+                @header("Location: ".$api_url);
+            } else {
+                return redirect('/?mask=true');
+            }
         }
     }
 
@@ -254,8 +258,8 @@ class HomeController extends BaseController
         $WxUserInfo = [
             'user_id' => $ret,
             'open_id' => $WxUser['open_id'],
-            'nickname' => $WxUser['nickname'],
-            'avatar_img' => $WxUser['avatar_img']
+//            'nickname' => $WxUser['nickname'],
+//            'avatar_img' => $WxUser['avatar_img']
         ];
 
         Cache::put($this->userAuthKey, $WxUserInfo,720);
