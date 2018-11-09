@@ -70,23 +70,18 @@ class WechatService extends BaseService
 
     public function getOpenId($code)
     {
-        if(session('open_id')) {
-            return session('open_id');
-        } else {
-            $appId = self::getAppId();
-            $appSecret = self::getSecret();
+        $appId = self::getAppId();
+        $appSecret = self::getSecret();
 
-            $url  = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='. $appId .'&secret='. $appSecret
-                .'&code='. $code .'&grant_type=authorization_code';
+        $url  = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='. $appId .'&secret='. $appSecret
+            .'&code='. $code .'&grant_type=authorization_code';
 
-            $ret = getRequestContent($url);
+        $ret = getRequestContent($url);
 
-            if(isset($ret['openid'])) {
-                session('open_id', $ret['openid']);
-                return $ret['openid'];
-            }
-
+        if(isset($ret['openid'])) {
+            return $ret['openid'];
         }
+
         return false;
     }
 
