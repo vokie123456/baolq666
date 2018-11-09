@@ -70,8 +70,8 @@ class WechatService extends BaseService
 
     public function getOpenId($code)
     {
-        if(Cache::has('open_id')) {
-            return Cache::get('open_id');
+        if(session('open_id')) {
+            return session('open_id');
         } else {
             $appId = self::getAppId();
             $appSecret = self::getSecret();
@@ -82,7 +82,7 @@ class WechatService extends BaseService
             $ret = getRequestContent($url);
 
             if(isset($ret['openid'])) {
-                Cache::put('open_id', $ret['openid'],1440);
+                session('open_id', $ret['openid']);
                 return $ret['openid'];
             }
 
