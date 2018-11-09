@@ -250,9 +250,11 @@ class HomeController extends BaseController
 
         $userService = new UserService();
         $WxUser = $request->session()->get($this->userAuthKey);
+        $wxOpenId = isset($WxUser['open_id'])?$WxUser['open_id']:'';
         //手机号已注册 直接登陆
         $userBase = $userService->getRegUserBase(['phone'=>$phone]);
         if(!empty($userBase)) {
+            $userService->updateRegUser(['id'=>$userBase->id],['open_id'=>$wxOpenId]);
             $ret = $userBase->id;
         } else {
             $WxUser['mobile'] = $phone;
@@ -269,7 +271,7 @@ class HomeController extends BaseController
         //登陆信息放进session
         $WxUserInfo = [
             'user_id' => $ret,
-            'open_id' => isset($WxUser['open_id'])?$WxUser['open_id']:'',
+            'open_id' => $wxOpenId,
 //            'nickname' => $WxUser['nickname'],
 //            'avatar_img' => $WxUser['avatar_img']
         ];

@@ -82,6 +82,19 @@ class UserService extends BaseService
     }
 
     /**
+     * 更新注册用户信息
+     * @param $params
+     * @param $data
+     * @return mixed
+     */
+    public function updateRegUser($params, $data)
+    {
+        $query = DB::table('user_info');
+        if(isset($params['id']))
+            return $query->where('id', $params['id'])->update($data);
+    }
+
+    /**
      * 用户点击记录
      * @param $params
      * @return mixed
