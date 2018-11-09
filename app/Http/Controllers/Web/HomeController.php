@@ -38,8 +38,15 @@ class HomeController extends BaseController
         $ProductService = new ProductService();
         $products = $ProductService->getWebProduct(5);
 
+        //是否显示弹框
+        $mask = $request->input('mask', '');
+        if($request->session()->get($this->userAuthKey)
+            && isset($request->session()->get($this->userAuthKey)['user_id'])) {
+            $mask = '';
+        }
+
         $this->outData['products'] = $products;
-        $this->outData['mask'] = $request->input('mask', ''); //是否显示弹框
+        $this->outData['mask'] = $mask;
 
         //微信定位
         $appKey = env('WECHAT_ACCOUNT_APPID');
@@ -166,7 +173,7 @@ class HomeController extends BaseController
 //                'avatar_img' => $userInfo['headimgurl']
             ];
 
-            $request->session()->put($this->userAuthKey, $WxUserInfo,10);
+            $request->session()->put($this->userAuthKey, $WxUserInfo);
             return redirect('/?mask=true');
         } else {
             if(stripos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
