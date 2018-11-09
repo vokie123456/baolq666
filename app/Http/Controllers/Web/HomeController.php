@@ -254,7 +254,10 @@ class HomeController extends BaseController
         //手机号已注册 直接登陆
         $userBase = $userService->getRegUserBase(['phone'=>$phone]);
         if(!empty($userBase)) {
-            $userService->updateRegUser(['id'=>$userBase->id],['open_id'=>$wxOpenId]);
+            if($wxOpenId) {
+                $userService->updateRegUser(['id'=>$userBase->id],['open_id'=>$wxOpenId]);
+            }
+
             $ret = $userBase->id;
         } else {
             $WxUser['mobile'] = $phone;
