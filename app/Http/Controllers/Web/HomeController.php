@@ -241,15 +241,20 @@ class HomeController extends BaseController
         if(empty($result))
             return output('',ErrorCode::REQUEST_PARAM_ERROR,'手机号或验证码输入错误','手机号或验证码输入错误');
 
-        $WxUser = $request->session()->get($this->userAuthKey);
-
-        $WxUser['mobile'] = $phone;
-        $WxUser['created_at'] = time();
-
         $userService = new UserService();
-        $ret = $userService->AddRegisterUser($WxUser);
-        if($ret == false) {
-            return output('', $userService->getErrorCode(),$userService->getErrorMsg(),$userService->getErrorMsg());
+        $WxUser = $request->session()->get($this->userAuthKey);
+        //手机号已注册 直接登陆
+        $userBase = $userService->getRegUserBase(['phone'=>$phone]);
+        if(!empty($userBase)) {
+            $ret = $userBase->id;
+        } else {
+            $WxUser['mobile'] = $phone;
+            $WxUser['created_at'] = time();
+
+            $ret = $userService->AddRegisterUser($WxUser);
+            if ($ret == false) {
+                return output('', $userService->getErrorCode(), $userService->getErrorMsg(), $userService->getErrorMsg());
+            }
         }
 
         //更新验证码状态
@@ -257,7 +262,7 @@ class HomeController extends BaseController
         //登陆信息放进session
         $WxUserInfo = [
             'user_id' => $ret,
-            'open_id' => $WxUser['open_id'],
+            'open_id' => isset($WxUser['open_id'])?$WxUser['open_id']:'',
 //            'nickname' => $WxUser['nickname'],
 //            'avatar_img' => $WxUser['avatar_img']
         ];

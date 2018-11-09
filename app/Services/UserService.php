@@ -67,6 +67,21 @@ class UserService extends BaseService
     }
 
     /**
+     * 根据条件获取注册用户信息
+     * @param $params
+     * @return mixed
+     */
+    public function getRegUserBase($params)
+    {
+        $query = DB::table('user_info');
+        if(isset($params['id']))
+            return $query->where('id', $params['id'])->first();
+
+        if(isset($params['phone']))
+            return $query->where('mobile', $params['phone'])->first();
+    }
+
+    /**
      * 用户点击记录
      * @param $params
      * @return mixed
