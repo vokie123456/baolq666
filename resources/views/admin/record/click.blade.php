@@ -19,7 +19,7 @@
             <form action="" method="post" id="form_search">
                 {{ csrf_field() }}
                 <input type="text" class="input-text" value="{{ $search['name'] or '' }}" style="width:250px" placeholder="输入产品名称" id="" name="search[name]">
-                <input type="text" class="input-text" value="{{ $search['nickname'] or '' }}" style="width:250px" placeholder="输入用户昵称" id="" name="search[nickname]">
+                <input type="text" class="input-text" value="{{ $search['mobile'] or '' }}" style="width:250px" placeholder="输入手机号码" id="" name="search[mobile]">
 
                 <button type="submit" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 查询</button>
             </form>
@@ -31,7 +31,7 @@
                 <tr class="text-c">
                     <th>ID</th>
                     <th>产品名称</th>
-                    <th>用户名称</th>
+                    <th>用户手机</th>
                     <th>添加时间</th>
                     <th>操作</th>
                 </tr>
@@ -41,7 +41,7 @@
                     <tr class="text-c">
                         <td>{{ $row->id }}</td>
                         <td>{{ $row->name }}</td>
-                        <td>{{ $row->nickname }}</td>
+                        <td>{{ $row->mobile }}</td>
 
                         <td>{{ $row->created_at }}</td>
                         <td>
