@@ -43,7 +43,7 @@
                         <td>{{ $row->name }}</td>
                         <td>{{ $row->mobile }}</td>
 
-                        <td>{{ $row->created_at }}</td>
+                        <td>{{ date('Y-m-d H:i:s',$row->created_at) }}</td>
                         <td>
 
                         </td>
