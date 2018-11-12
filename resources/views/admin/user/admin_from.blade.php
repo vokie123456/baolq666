@@ -8,7 +8,7 @@
 @section('main_content')
     @parent
     <article class="page-container">
-        <form action="" method="post" class="form form-horizontal" id="form-resource-add" enctype="multipart/form-data">
+        <form action="/admin/user/admin/add" method="post" class="form form-horizontal" id="form-resource-add" enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>用户名：</label>

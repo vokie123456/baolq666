@@ -53,7 +53,6 @@ class UserController extends BaseController {
                 'password' => 'required'
             ];
             $this->validate($request,$validate);
-
             $time = time();
             $saveData = [
                 'username' => $request->input('username'),

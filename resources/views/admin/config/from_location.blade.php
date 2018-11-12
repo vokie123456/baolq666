@@ -4,7 +4,7 @@
     @parent
 
     <article class="page-container">
-        <form action="" method="post" class="form form-horizontal" id="form-resource-add">
+        <form action="{{ $url }}" method="post" class="form form-horizontal" id="form-resource-add">
             {{ csrf_field() }}
             <div class="row cl">
                 <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>名称：</label>

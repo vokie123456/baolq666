@@ -179,9 +179,9 @@ class HomeController extends BaseController
             if(stripos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger')) {
                 //微信授权链接
                 $appId = env('WECHAT_ACCOUNT_APPID');
-                $AppUrl = env('WECHAT_REDIRECT_URL');
+                $AppUrl = urlencode(env('WECHAT_REDIRECT_URL').'/wx/oauth');
                 $api_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='. $appId.'&redirect_uri='.$AppUrl;
-                $api_url .= '/wx/oauth&response_type=code&scope=snsapi_base&state=123&connect_redirect=1#wechat_redirect';
+                $api_url .= '&response_type=code&scope=snsapi_base&state=123#wechat_redirect';
 
                 @header("Location: ".$api_url);
             } else {

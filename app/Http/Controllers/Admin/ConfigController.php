@@ -148,7 +148,8 @@ class ConfigController extends BaseController
             return output([]);
         }
 
-        return view('admin.config.from_location');
+        $this->outData['url'] = '/admin/config/location/add';
+        return view('admin.config.from_location', $this->outData);
     }
 
     /**
@@ -179,7 +180,7 @@ class ConfigController extends BaseController
 
         $ConfigService = new ConfigService();
         $this->outData['info'] = $ConfigService->getLocation(['id' => $id]);
-
+        $this->outData['url'] = '/admin/config/location/update/'.$id;
         return view('admin.config.from_location', $this->outData);
     }
 
@@ -249,7 +250,8 @@ class ConfigController extends BaseController
             return output([]);
         }
 
-        return view('admin.config.from_app');
+        $this->outData['url'] = '/admin/config/app/add';
+        return view('admin.config.from_app', $this->outData);
     }
 
     /**
@@ -274,7 +276,7 @@ class ConfigController extends BaseController
                 return output('', ErrorCode::REQUEST_PARAM_ERROR, $error, $error);
             }
 
-            $saveData = $request->only(['name', 'location_code', 'resource_id', 'allow_deny', 'community_ids', 'tags', 'state', 'image', 'sort', 'des']);
+            $saveData = $request->only(['name', 'location_code', 'resource_id', 'allow_deny', 'community_ids', 'tags', 'url', 'state', 'image', 'sort', 'des']);
 
             if ( $saveData['image'] && file_exists(storage_path('uploads').'/'.$saveData['image']) ) {
                 #移动文件到存储目录
@@ -297,6 +299,7 @@ class ConfigController extends BaseController
         $info = $ConfigService->getApp(['id' => $id]);
 
         $this->outData['info'] = $info;
+        $this->outData['url'] = '/admin/config/app/update/'.$id;
 
         return view('admin.config.from_app', $this->outData);
     }
@@ -368,7 +371,8 @@ class ConfigController extends BaseController
             return output([]);
         }
 
-        return view('admin.config.from_product');
+        $this->outData['url'] = '/admin/product/add';
+        return view('admin.config.from_product', $this->outData);
     }
 
     /**
@@ -417,6 +421,7 @@ class ConfigController extends BaseController
         $info = $ProductService->getProduct(['id' => $id]);
 
         $this->outData['info'] = $info;
+        $this->outData['url'] = '/admin/product/update/'.$id;
 
         return view('admin.config.from_product', $this->outData);
     }
